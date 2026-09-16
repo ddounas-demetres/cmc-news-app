@@ -11,11 +11,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Unzip project
+      - name: List repo contents (debug)
         run: |
-          if [ -f CMCNewsNotifier-android-app.zip ]; then
-            unzip -o CMCNewsNotifier-android-app.zip -d .
+          echo "--- Repo root contents ---"
+          ls -la
+
+      - name: Unzip project (auto-detect zip name)
+        run: |
+          ZIP_FILE=$(ls *.zip 2>/dev/null | head -n1)
+          if [ -n "$ZIP_FILE" ]; then
+            echo "Found zip file: $ZIP_FILE"
+            unzip -o "$ZIP_FILE" -d .
+          else
+            echo "ERROR: no .zip file found in repo root!"
+            exit 1
           fi
+          echo "--- After unzip ---"
+          ls -la
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
