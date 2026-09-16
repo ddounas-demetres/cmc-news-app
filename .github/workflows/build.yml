@@ -23,17 +23,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.7
-
       - name: Build debug APK
         working-directory: CMCNewsNotifier
-        run: gradle assembleDebug
+        run: |
+          chmod +x gradlew 2>/dev/null || true
+          if [ -f gradlew ]; then
+            ./gradlew assembleDebug
+          else
+            gradle assembleDebug
+          fi
 
       - name: Create release with APK
         uses: softprops/action-gh-release@v2
